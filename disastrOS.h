@@ -31,10 +31,16 @@ void disastrOS_shutdown();
 // timers
 void disastrOS_sleep(int);
 
-// respurces (files)
+// resources (files)
 int disastrOS_openResource(int resource_id, int type, int mode);
 int disastrOS_closeResource(int fd) ;
 int disastrOS_destroyResource(int resource_id);
+
+//Semaphores
+int disastrOS_semOpen(int id, int count);
+int disastrOS_semClose(int desc);
+int disastrOS_semWait(int desc);
+int disastrOS_semPost(int desc);
 
 // debug function, prints the state of the internal system
 void disastrOS_printStatus();
