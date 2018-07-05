@@ -13,34 +13,34 @@ SemDescriptor* desc = SemDescriptorList_byFd(&running->sem_descriptors, fd);
 if (!desc) {
         running->syscall_retvalue = DSOS_ESEMAPHORENOFD;
         return;
-    }
-    
-    printf("Pid %d requesting semwait on %d semaphore\n", running->pid, desc->semaphore->id);
+}
+printf("Pid %d requesting semwait on %d semaphore\n", running->pid, desc->semaphore->id);
 
-    SemDescriptorPtr* desc_ptr; = desc->ptr;
-    if(!desc_ptr){
+SemDescriptorPtr* desc_ptr; = desc->ptr;
+if(!desc_ptr){
         running->syscall_retvalue = DSOS_ESEMAPHOREDESC;
         return;
-    }
+}
     
-    Semaphore* sem = desc->semaphore;
-    if (!sem) {
+Semaphore* sem = desc->semaphore;
+if (!sem) {
         running->syscall_retvalue = DSOS_ESEMAPHORENOTAVAIBLE;
         return;
-    }
+}
     
-    PCB* p;
-    sem->count--;
+PCB* p;
+sem->count--;
 
-    if(sem->count < 0){
+if(sem->count < 0){
         List_detach(&sem->descriptors, (ListItem*) desc_ptr);
         List_insert(&sem->waiting_descriptors, sem->waiting_descriptors.last, (ListItem*) desc->ptr);
         List_insert(&waiting_list, waiting_list.last, (ListItem*) running);
         running->status = Waiting;
         p = (PCB*) List_detach(&ready_list, (ListItem*) ready_list.first);
         running = (PCB*)p;
-    }
-    
-    running->syscall_retvalue=0;
-    return;
+}
+        
+running->syscall_retvalue=0;
+return;
+
 }
