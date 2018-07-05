@@ -8,10 +8,9 @@
 
 void internal_semWait(){
 
-    int fd = running->syscall_args[0];
-  
-    SemDescriptor* desc = SemDescriptorList_byFd(&running->sem_descriptors, fd);
-    if (!desc) {
+int fd = running->syscall_args[0];
+SemDescriptor* desc = SemDescriptorList_byFd(&running->sem_descriptors, fd);
+if (!desc) {
         running->syscall_retvalue = DSOS_ESEMAPHORENOFD;
         return;
     }
@@ -19,10 +18,10 @@ void internal_semWait(){
     printf("Pid %d requesting semwait on %d semaphore\n", running->pid, desc->semaphore->id);
 
     SemDescriptorPtr* desc_ptr; = desc->ptr;
-	if(!desc_ptr){
-		running->syscall_retvalue = DSOS_ESEMAPHOREDESC;
-		return;
-	}
+    if(!desc_ptr){
+        running->syscall_retvalue = DSOS_ESEMAPHOREDESC;
+        return;
+    }
     
     Semaphore* sem = desc->semaphore;
     if (!sem) {
@@ -30,7 +29,7 @@ void internal_semWait(){
         return;
     }
     
-	PCB* p;
+    PCB* p;
     sem->count--;
 
     if(sem->count < 0){
