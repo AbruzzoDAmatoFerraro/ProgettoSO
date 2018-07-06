@@ -29,7 +29,7 @@ void internal_semOpen(){
     SemDescriptor* des = SemDescriptor_alloc(fd, sem, running);
     
     if (!des) {
-        running->syscall_retvalue = DSOS_ESEMDESCALLOC;
+        running->syscall_retvalue = DSOS_ESEMAPHORENOFD;
         return;
     }
     
@@ -41,6 +41,7 @@ void internal_semOpen(){
         running->syscall_retvalue = DSOS_ESEMAPHOREDESC;
         return;
     }
+    SemDescriptorPtr* ptr_desc = SemDescriptorPtr_alloc(des);
     
     des->ptr=ptr_desc;
     List_insert(&sem->descriptors, sem->descriptors.last, (ListItem*) ptr_desc);
