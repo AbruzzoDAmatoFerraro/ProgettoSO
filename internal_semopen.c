@@ -13,7 +13,7 @@ void internal_semOpen(){
     int id = running->syscall_args[0];
     int count = running->syscall_args[1];
     
-    Semaphore* sem = SemaphoreList_byId(semaphores_list, id);
+    Semaphore* sem = SemaphoreList_byId(&semaphores_list, id);
 
     if (count < 0){
         running->syscall_retvalue = DSOS_ESEMAPHOREOPEN;
@@ -37,7 +37,7 @@ void internal_semOpen(){
     List_insert(&running->sem_descriptors, running->sem_descriptors.last, (ListItem*) des);
     
     SemDescriptorPtr* ptr_desc = SemDescriptorPtr_alloc(des);
-    if (ptr_desc) {
+    if (!ptr_desc) {
         running->syscall_retvalue = DSOS_ESEMAPHOREDESC;
         return;
     }
