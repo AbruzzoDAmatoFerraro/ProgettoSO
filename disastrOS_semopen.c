@@ -16,7 +16,7 @@ void internal_semOpen(){
     Semaphore* sem = SemaphoreList_byId(&semaphores_list, id);
 
     if (count < 0){
-        running->syscall_retvalue = DSOS_ESEMAPHOREOPEN;
+        running->syscall_retvalue = DSOS_ERRSEMVAL;
         return;
     }
     
@@ -29,7 +29,7 @@ void internal_semOpen(){
     SemDescriptor* des = SemDescriptor_alloc(fd, sem, running);
     
     if (!des) {
-        running->syscall_retvalue = DSOS_ESEMDESCALLOC;
+        running->syscall_retvalue = DSOS_ERRSEMDESALLOC;
         return;
     }
     
@@ -38,9 +38,10 @@ void internal_semOpen(){
     
     SemDescriptorPtr* ptr_desc = SemDescriptorPtr_alloc(des);
     if (!ptr_desc) {
-        running->syscall_retvalue = DSOS_ESEMAPHOREDESC;
+        running->syscall_retvalue = DSOS_ERRSEMDESPTR;
         return;
     }
+    SemDescriptorPtr* ptr_desc = SemDescriptorPtr_alloc(des);
     
     des->ptr=ptr_desc;
     List_insert(&sem->descriptors, sem->descriptors.last, (ListItem*) ptr_desc);
