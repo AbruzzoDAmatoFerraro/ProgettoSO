@@ -11,20 +11,19 @@ void internal_semWait(){
 int fd = running->syscall_args[0];
 SemDescriptor* desc = SemDescriptorList_byFd(&running->sem_descriptors, fd);
 if (!desc) {
-        running->syscall_retvalue = DSOS_ESEMAPHORENOFD;
+        running->syscall_retvalue = DSOS_ERRSEMDESBYFD;
         return;
 }
-printf("Pid %d requesting semwait on %d semaphore\n", running->pid, desc->semaphore->id);
 
-SemDescriptorPtr* desc_ptr; = desc->ptr;
+SemDescriptorPtr* desc_ptr = desc->ptr;
 if(!desc_ptr){
-        running->syscall_retvalue = DSOS_ESEMAPHOREDESC;
+        running->syscall_retvalue = DSOS_ERRSEMDESPTR;
         return;
 }
     
 Semaphore* sem = desc->semaphore;
 if (!sem) {
-        running->syscall_retvalue = DSOS_ESEMAPHORENOTAVAIBLE;
+        running->syscall_retvalue = DSOS_ERRNOTSEM;
         return;
 }
     
