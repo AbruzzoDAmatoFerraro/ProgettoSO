@@ -28,6 +28,12 @@
 #define DSOS_ERESOURCENOFD -11
 #define DSOS_ERESOURCECLOSE -12
 #define DSOS_ERESOURCEINUSE -13
+#define DSOS_ERRSEMVAL -14 //errore valore sem<0
+#define DSOS_ERRSEMDESALLOC -15 //errore SemDescriptor_alloc
+#define DSOS_ERRSEMDESBYFD -16 //errore SemDescriptorList_byFd
+#define DSOS_ERRNOTSEM -17 //errore sem_desc->semaphore
+#define DSOS_ERRSEMDESPTR -18 //errore SemDescriptorPtr
+
 
 // syscall numbers
 #define DSOS_MAX_SYSCALLS 32
