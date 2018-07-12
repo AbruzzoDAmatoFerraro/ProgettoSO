@@ -12,28 +12,27 @@ void internal_semPost(){
     SemDescriptor* desc = SemDescriptorList_byFd(&running->sem_descriptors, fd); 
   
     if(!desc){
-        running->syscall_retvalue=DSOS_ESEMAPHORENOFD;
-		return;
+        running->syscall_retvalue=DSOS_ERRSEMDESBYFD;
+	return;
     }
 
     Semaphore* sem = desc->semaphore;
-  
     if(!sem){
-		running->syscall_retvalue= DSOS_ESEMAPHORENOAVAILABLE;
-		return;
-	}
+    	running->syscall_retvalue= DSOS_ERRNOTSEM;
+	return;
+    }
 
     sem->count++;
     SemDescriptorPtr* sem_des_ptr;
   
     if (sem->count <= 0) {
-        List_insert(&ready_list, ready_list.last, (ListItem*) running);
         sem_des_ptr=(SemDescriptorPtr*) List_detach(&sem->waiting_descriptors, (ListItem*) sem->waiting_descriptors.first);
+	PCB* pcb = sem_des_ptr->descriptor->pcb;  
         List_insert(&sem->descriptors, sem->descriptors.last, (ListItem*) sem_des_ptr);
-        List_detach(&waiting_list, (ListItem*) sem_des_ptr->descriptor->pcb);
-        running->status = Ready;
-        running = sem_des_ptr->descriptor->pcb;
+        List_detach(&waiting_list, (ListItem*) pcb);
+	List_insert(&ready_list, (ListItem*) ready_list.last, (ListItem*) pcb);
+	pcb->status = Ready; 
     }
     running->syscall_retvalue = 0;
-	return;
+    return;
 }
