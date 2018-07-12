@@ -12,7 +12,7 @@ void internal_semClose(){
     SemDescriptor* sem_desc = SemDescriptorList_byFd(&running->sem_descriptors, fd);
 
     if(!sem_desc){
-        running->syscall_retvalue = DSOS_ESEMAPHORENOFD;
+        running->syscall_retvalue = DSOS_ERRSEMDESBYFD;
         return;
     }
 
@@ -20,12 +20,15 @@ void internal_semClose(){
     Semaphore* sem = sem_desc->semaphore;
     
     if(!sem){
-        running->return_value=DSOS_ESEMAPHORENOAVAILABLE;
+        running->return_value=DSOS_ERRNOTSEM;
         return;
     }
 
     SemDescriptorPtr* sem_desc_ptr = (SemDescriptorPtr*)List_detach(&(sem->descriptors), (ListItem*)(sem_desc->ptr));
-    assert(sem_desc_ptr);
+    if(!sem_desc_ptr) {
+	running->syscall_retvalue = DSOS_ERRSEMDESPTR;
+        return;
+    }
 
     if(sem->descriptors.size == 0 && sem->waiting_descriptors.size==0){
         List_detach(&semaphores_list, (ListItem*)sem);
