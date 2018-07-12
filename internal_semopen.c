@@ -41,7 +41,6 @@ void internal_semOpen(){
         running->syscall_retvalue = DSOS_ERRSEMDESPTR;
         return;
     }
-    SemDescriptorPtr* ptr_desc = SemDescriptorPtr_alloc(des);
     
     des->ptr=ptr_desc;
     List_insert(&sem->descriptors, sem->descriptors.last, (ListItem*) ptr_desc);
